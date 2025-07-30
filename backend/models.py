@@ -4,7 +4,7 @@ from database import engine
 
 
 class User(Base):
-    _tablename_ = "users"
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
