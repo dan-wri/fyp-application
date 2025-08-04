@@ -1,9 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
-import googleicon from '../assets/google.svg'
-import linkedinicon from '../assets/linkedin.svg'
 
-export function Login() {
+export function SignUp() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
@@ -29,54 +27,59 @@ export function Login() {
     }
 
     const handleSubmit = async (event) => {
-        event.preventDefault()
-        if (!validateForm()) return
-        setLoading(true)
+    event.preventDefault()
+    if (!validateForm()) return
+    setLoading(true)
+
+    try {
+        const registerResponse = await fetch('http://localhost:8000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        })
+
+        if (!registerResponse.ok) {
+            const errorData = await registerResponse.json()
+            setError(errorData.detail || 'Registration failed!')
+            setLoading(false)
+            return
+        }
 
         const formDetails = new URLSearchParams()
-        formDetails.append('username', email)
-        formDetails.append('password', password)
+            formDetails.append('username', email)
+            formDetails.append('password', password)
 
-        try {
-            const response = await fetch('http://localhost:8000/token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: formDetails,
-            })
+        const loginResponse = await fetch('http://localhost:8000/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formDetails,
+        })
 
-            setLoading(false)
+        setLoading(false)
 
-            if (response.ok) {
-                const data = await response.json()
-                localStorage.setItem('token', data.access_token)
-                navigate('/protected')
-            } else {
-                const errorData = await response.json()
-                setError(errorData.detail || 'Authentication failed!')
-            }
+        if (loginResponse.ok) {
+            const data = await loginResponse.json()
+            localStorage.setItem('token', data.access_token)
+            navigate('/protected')
+        } else {
+            const errorData = await loginResponse.json()
+            setError(errorData.detail || 'Login after registration failed!')
+        }
+
         } catch (error) {
             console.error(error)
-            setLoading(false)
             setError('An error occurred. Please try again later.')
+            setLoading(false)
         }
     }
 
     return (
         <div className='login-container'>
-            <h2 className='login-container-title'>Log in with</h2>
-            <div className='alt-login'>
-                <button className='alt-login-button'>
-                   <img src={googleicon} alt='Google' className='alt-login-icon'/>
-                   Google
-                </button>
-                <button className='alt-login-button'>
-                   <img src={linkedinicon} alt='LinkedIn' className='alt-login-icon'/>
-                   LinkedIn
-                </button>
-            </div>
-            <p className='separator'><span>or</span></p>
+            <h2 className='login-container-title'>Sign Up</h2>
 
             <form action="#" className='login-form' onSubmit={handleSubmit}>
                 <div className='login-input-wrapper'>
@@ -91,15 +94,14 @@ export function Login() {
                         {isPasswordShown ? 'visibility' : 'visibility_off'}
                     </i>
                 </div>
-                <a href="#" className='login-forgot-password'>Forgot Password?</a>
 
-                <button className='login-button' type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Log in'}</button>
+                <button className='login-button' type="submit" disabled={loading}>{loading ? 'Signing up...' : 'Sign Up'}</button>
                 {error && <p style={{color: 'red'}}>{error}</p>}
             </form>
             
-            <p className='login-display-change'>Don&apos;t have an account? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/signup') }}>Sign up today!</a></p>
+            <p className='login-display-change'>Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/') }}>Log in here!</a></p>
         </div>
     )
 }
 
-export default Login
+export default SignUp
