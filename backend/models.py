@@ -10,5 +10,13 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
 
+    username = Column(String, nullable=True)
+    profile_picture = Column(String, nullable=True)
+    age = Column(Integer, nullable=True)
+    pronouns = Column(String, nullable=True)
+    gender = Column(String, nullable=True)
+    bio = Column(String, nullable=True)
+    address = Column(String, nullable=True)
+
 
 User.metadata.create_all(bind=engine)
