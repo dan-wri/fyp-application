@@ -4,6 +4,7 @@ import Login from './components/Login'
 import ProtectedPage from './components/Protected'
 import SignUp from './components/SignUp'
 import Layout from './components/Layout'
+import MyProfile from './components/user/MyProfile'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
 
         <Route element={<Layout />}>
           <Route path="/protected" element={<ProtectedPage />} />
+          <Route path="/myprofile" element={<MyProfile />} />
         </Route>
       </Routes>
     </Router>

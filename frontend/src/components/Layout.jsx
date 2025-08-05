@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Outlet, Link, useNavigate } from "react-router-dom"
-import { useState } from "react"
+import { verifyToken } from "../utils/verifyToken"
 
 export function Layout() {
     const [showHistoryDropdown, setShowHistoryDropdown] = useState(false)
@@ -8,23 +8,15 @@ export function Layout() {
     const navigate = useNavigate()
     
         useEffect(() => {
-            const verifyToken = async () => {
-                const token = localStorage.getItem('token')
-                console.log(token)
-                try {
-                    const response = await fetch(`http://localhost:8000/verify-token/${token}`)
-    
-                    if (!response.ok) {
-                        throw new Error('Token verification failed')
-                    }
-                } catch (error) {
-                    console.error(error)
-                    localStorage.removeItem('token')
-                    navigate('/')
+            const checkToken = async () => {
+                const isValid = await verifyToken()
+                if (!isValid) {
+                    localStorage.removeItem("token")
+                    navigate("/")
                 }
             }
     
-            verifyToken()
+            checkToken()
         }, [navigate])
 
     return (
@@ -54,7 +46,7 @@ export function Layout() {
                                 </div>
                             )}
                         </div>
-                        <Link to="/profile">My Profile</Link>
+                        <Link to="/myprofile">My Profile</Link>
                         <button 
                             onClick={() => {
                                 localStorage.removeItem('token')

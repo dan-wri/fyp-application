@@ -18,5 +18,7 @@ class User(Base):
     bio = Column(String, nullable=True)
     address = Column(String, nullable=True)
 
+    role = Column(String, default="user")
+
 
 User.metadata.create_all(bind=engine)
