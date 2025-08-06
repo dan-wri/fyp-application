@@ -83,7 +83,7 @@ export function MyProfile() {
                 </h1>
                 <p className="email">{user.email}</p>
 
-                <p className="bio">{(user.bio || 'No bio provided.').split('\n').map((line, index) => (
+                <p className="bio"><div className='info-label'>About Me:</div>{(user.bio || 'No bio provided.').split('\n').map((line, index) => (
                     <span key={index}>
                         {line}
                         <br />

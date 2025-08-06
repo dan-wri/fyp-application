@@ -34,6 +34,7 @@ body {
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   width: 100%;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.055);
 }
 
 .header-content {
@@ -321,11 +322,13 @@ body {
 
 .profile-left {
   flex: 0.20;
-  border-right: 1px solid #d1d5db;
-  padding-right: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgb(240, 246, 253);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.055);
+  border-radius: 0.5rem;
 }
 
 .profile-picture {
@@ -385,8 +388,39 @@ body {
   font-size: 1rem;
 }
 
+/* .bio {
+  font-style: italic;
+  margin-bottom: 1rem;
+  font-size: 0.7rem;
+} */
+
 .bio {
   font-style: italic;
   margin-bottom: 1rem;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-height: 200px;
+  overflow: hidden;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.bio:hover {
+  overflow-y: auto;
+}
+
+.bio::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bio::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.bio::-webkit-scrollbar-track {
+  background: transparent;
 }
