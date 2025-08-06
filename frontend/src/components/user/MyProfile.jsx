@@ -25,7 +25,7 @@ export function MyProfile() {
                 } else if (response.status === 403 || response.status === 401) {
                     setError('Unauthorized. Please log in again.');
                     localStorage.removeItem('token');
-                    navigate('/login');
+                    navigate('/');
                 } else {
                     const errorData = await response.json();
                     setError(errorData.detail || 'Failed to fetch user details.');
@@ -45,14 +45,52 @@ export function MyProfile() {
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
     return ( 
-        <div>
-            <li><strong>Email:</strong> {user.email}</li>
-            <li><strong>Username:</strong> {user.username || 'N/A'}</li>
-            <li><strong>Age:</strong> {user.age || 'N/A'}</li>
-            <li><strong>Pronouns:</strong> {user.pronouns || 'N/A'}</li>
-            <li><strong>Gender:</strong> {user.gender || 'N/A'}</li>
-            <li><strong>Bio:</strong> {user.bio || 'N/A'}</li>
-            <li><strong>Address:</strong> {user.address || 'N/A'}</li>
+        <div className='profile-container'>
+            <div className="profile-left">
+                <img
+                    className="profile-picture"
+                    src={user.profile_picture || 'https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg'}
+                    alt="User Profile"
+                />
+                <ul className="profile-info">
+                    <li>
+                        <div className="info-label">Full Name:</div>
+                        <div className="info-value">{user.username || 'N/A'}</div>
+                    </li>
+                    <li>
+                        <div className="info-label">Age:</div>
+                        <div className="info-value">{user.age || 'N/A'}</div>
+                    </li>
+                    <li>
+                        <div className="info-label">Pronouns:</div>
+                        <div className="info-value">{user.pronouns || 'N/A'}</div>
+                    </li>
+                    <li>
+                        <div className="info-label">Gender:</div>
+                        <div className="info-value">{user.gender || 'N/A'}</div>
+                    </li>
+                    <li>
+                        <div className="info-label">Address:</div>
+                        <div className="info-value">{user.address || 'N/A'}</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div className="profile-right">
+                <h1 className="username">
+                    {user.username}
+                    <span className="username-normal">{"'s profile"}</span>
+                </h1>
+                <p className="email">{user.email}</p>
+
+                <p className="bio">{(user.bio || 'No bio provided.').split('\n').map((line, index) => (
+                    <span key={index}>
+                        {line}
+                        <br />
+                    </span>
+                ))}</p>
+
+            </div>
         </div> )
 }
 
