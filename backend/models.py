@@ -12,6 +12,7 @@ class User(Base):
 
     username = Column(String, nullable=True)
     profile_picture = Column(String, nullable=True)
+    full_name = Column(String, nullable=True)
     age = Column(Integer, nullable=True)
     pronouns = Column(String, nullable=True)
     gender = Column(String, nullable=True)
@@ -19,6 +20,8 @@ class User(Base):
     address = Column(String, nullable=True)
 
     role = Column(String, default="user")
+    xp = Column(Integer, default=0)
+    level = Column(Integer, default=1)
 
 
 User.metadata.create_all(bind=engine)

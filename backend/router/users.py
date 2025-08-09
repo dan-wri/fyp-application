@@ -36,9 +36,28 @@ def get_user_details(current_user: User = Depends(get_current_user)):
         "email": current_user.email,
         "username": current_user.username,
         "profile_picture": current_user.profile_picture,
+        "full_name": current_user.full_name,
         "age": current_user.age,
         "pronouns": current_user.pronouns,
         "gender": current_user.gender,
         "bio": current_user.bio,
         "address": current_user.address,
+        "xp": current_user.xp,
+        "level": current_user.level,
+    }
+
+
+@router.post("/gain-xp")
+def gain_xp(amount: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    current_user.xp += amount
+
+    while current_user.xp >= 5000:
+        current_user.xp -= 5000
+        current_user.level += 1
+
+    db.commit()
+    return {
+        "message": f"XP added",
+        "xp": current_user.xp,
+        "level": current_user.level
     }

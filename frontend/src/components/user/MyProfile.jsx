@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export function MyProfile() {
     const [user, setUser] = useState(null);
+    const [formData, setFormData] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [isEditing, setIsEditing] = useState(false);
+    const [usernameWidth, setUsernameWidth] = useState(0);
+    const measureRef = useRef();
+    const bioRef = useRef(null);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -22,6 +27,7 @@ export function MyProfile() {
                 if (response.ok) {
                     const data = await response.json();
                     setUser(data);
+                    setFormData(data);
                 } else if (response.status === 403 || response.status === 401) {
                     setError('Unauthorized. Please log in again.');
                     localStorage.removeItem('token');
@@ -41,10 +47,32 @@ export function MyProfile() {
         fetchUserDetails();
     }, [navigate]);
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSave = async () => {
+        
+    };
+
+    useEffect(() => {
+        if (measureRef.current) {
+            setUsernameWidth(measureRef.current.offsetWidth);
+        }
+    }, [formData.username, isEditing]);
+
+    useEffect(() => {
+        if (bioRef.current) {
+            bioRef.current.style.height = 'auto';
+            bioRef.current.style.height = Math.min(bioRef.current.scrollHeight, 200) + 'px';
+        }
+    }, [formData.bio, isEditing]);
+
     if (loading) return <p>Loading profile...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
 
-    return ( 
+    return (
         <div className='profile-container'>
             <div className="profile-left">
                 <img
@@ -53,45 +81,108 @@ export function MyProfile() {
                     alt="User Profile"
                 />
                 <ul className="profile-info">
-                    <li>
-                        <div className="info-label">Full Name:</div>
-                        <div className="info-value">{user.username || 'N/A'}</div>
-                    </li>
-                    <li>
-                        <div className="info-label">Age:</div>
-                        <div className="info-value">{user.age || 'N/A'}</div>
-                    </li>
-                    <li>
-                        <div className="info-label">Pronouns:</div>
-                        <div className="info-value">{user.pronouns || 'N/A'}</div>
-                    </li>
-                    <li>
-                        <div className="info-label">Gender:</div>
-                        <div className="info-value">{user.gender || 'N/A'}</div>
-                    </li>
-                    <li>
-                        <div className="info-label">Address:</div>
-                        <div className="info-value">{user.address || 'N/A'}</div>
-                    </li>
+                    {['full_name', 'age', 'pronouns', 'gender', 'address'].map((field) => (
+                        <li key={field}>
+                            <div className="info-label">
+                                {field.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}:
+                            </div>
+                            {isEditing ? (
+                                <input
+                                    className="info-value"
+                                    name={field}
+                                    value={formData[field] || ''}
+                                    onChange={handleChange}
+                                />
+                            ) : (
+                                <div className="info-value">{user[field] || 'N/A'}</div>
+                            )}
+                        </li>
+                    ))}
                 </ul>
             </div>
 
             <div className="profile-right">
                 <h1 className="username">
-                    {user.username}
+                    {isEditing ? (
+                        <>
+                            <span
+                                ref={measureRef}
+                                className="input-measure"
+                            >
+                                {formData.username || ''}
+                            </span>
+                            <input
+                                style={{ width: `${usernameWidth}px` }}
+                                name="username"
+                                value={formData.username || ''}
+                                onChange={handleChange}
+                            />
+                        </>
+                    ) : (
+                        user.username
+                    )}
                     <span className="username-normal">{"'s profile"}</span>
                 </h1>
                 <p className="email">{user.email}</p>
 
-                <p className="bio"><div className='info-label'>About Me:</div>{(user.bio || 'No bio provided.').split('\n').map((line, index) => (
-                    <span key={index}>
-                        {line}
-                        <br />
-                    </span>
-                ))}</p>
+                <div>
+                    <div className='info-label'>About Me:</div>
+                    {isEditing ? (
+                        <textarea
+                        name="bio"
+                        value={formData.bio || ''}
+                        onChange={handleChange}
+                        ref={bioRef}
+                        style={{ width: '100%' }}
+                        className="bio-textarea"
+                        />
+                    ) : (
+                        <div className='bio'>
+                        {(user.bio || 'No bio provided.').split('\n').map((line, index) => (
+                            <span key={index}>{line}<br /></span>
+                        ))}
+                        </div>
+                    )}
+                </div>
 
+
+                <div className="xp-section">
+                    <div className="level-text">Level {user.level || 1}</div>
+                    <div className="xp-bar-container">
+                        <div
+                            className="xp-bar-fill"
+                            style={{
+                                width: `${(user.xp % 5000) / 5000 * 100}%`
+                            }}
+                        ></div>
+                    </div>
+                    <div className="xp-text">{user.xp % 5000} / 5000 XP</div>
+                </div>
+
+                {isEditing ? (
+                    <>
+                        <button onClick={handleSave} className='profile-edit-button'>Save</button>
+                        <button onClick={() => { setIsEditing(false); setFormData(user); }} className='profile-edit-button'>Cancel</button>
+                    </>
+                ) : (
+                    <button onClick={() => setIsEditing(true)} className='profile-edit-button'>Edit Profile</button>
+                )}
             </div>
-        </div> )
+        </div>
+    );
 }
 
-export default MyProfile
+export default MyProfile;
+
+
+{/* <button onClick={async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch('http://localhost:8000/gain-xp?amount=1200', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    const updated = await response.json();
+    setUser((prev) => ({ ...prev, ...updated }));
+}}>Gain 1200 XP</button> */}

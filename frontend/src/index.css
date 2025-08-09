@@ -346,6 +346,7 @@ body {
   margin: 0;
   text-align: left;
   font-size: 0.95rem;
+  max-width: 140px;
 }
 
 .profile-info li {
@@ -372,6 +373,8 @@ body {
 .username {
   font-size: 2rem;
   margin-bottom: 0rem;
+  display: inline-flex;
+  align-items: baseline;
 }
 
 .username-normal {
@@ -423,4 +426,131 @@ body {
 
 .bio::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.xp-section {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.level-text {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.xp-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 20px;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.4s ease-in-out;
+}
+
+.xp-text {
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.profile-edit-button {
+  margin-top: 1.5rem;
+  display: inline-block;
+  padding: 0.65rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  background: rgb(122, 170, 218);
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-edit-button:hover {
+  background: rgb(80, 135, 202);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.15);
+}
+
+.profile-edit-button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info input {
+  font-size: 0.95rem;
+  color: #444;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  max-width: 140px;
+  font-family: inherit;
+}
+
+.username input {
+  font-size: 2rem;
+  font-weight: bold;
+  color: inherit;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  min-width: 1ch;
+}
+
+.bio-textarea {
+  font-style: italic;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+  resize: none;
+  max-height: 200px;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+  color: #000000;
+  height: auto;
+}
+
+.bio-textarea::-webkit-scrollbar {
+  width: 0;
+}
+
+.bio-textarea:hover::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bio-textarea::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.bio-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profile-info input:focus,
+.username input:focus,
+.bio-textarea:focus {
+  background-color: #d8ffd9;
+}
+
+.input-measure {
+  position: absolute;
+  visibility: hidden;
+  white-space: pre;
+  font-size: 2rem;
+  font-weight: bold;
 }
