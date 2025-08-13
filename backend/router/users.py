@@ -1,8 +1,10 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from models import User
 from utils import get_db, SECRET_KEY, ALGORITHM, oauth2_scheme, get_user_by_email
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -60,4 +62,40 @@ def gain_xp(amount: int, current_user: User = Depends(get_current_user), db: Ses
         "message": f"XP added",
         "xp": current_user.xp,
         "level": current_user.level
+    }
+
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    full_name: Optional[str] = None
+    age: Optional[int] = None
+    pronouns: Optional[str] = None
+    gender: Optional[str] = None
+    bio: Optional[str] = None
+    address: Optional[str] = None
+
+
+@router.post("/set-user-details")
+def set_user_details(form_data: UserUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    current_user.username = form_data.username
+    current_user.full_name = form_data.full_name
+    current_user.age = form_data.age
+    current_user.pronouns = form_data.pronouns
+    current_user.gender = form_data.gender
+    current_user.bio = form_data.bio
+    current_user.address = form_data.address
+
+    for field, value in form_data.dict(exclude_unset=True).items():
+        setattr(current_user, field, value)
+
+    db.commit()
+    db.refresh(current_user)
+    return {
+        "username": current_user.username,
+        "full_name": current_user.full_name,
+        "age": current_user.age,
+        "pronouns": current_user.pronouns,
+        "gender": current_user.gender,
+        "bio": current_user.bio,
+        "address": current_user.address,
     }

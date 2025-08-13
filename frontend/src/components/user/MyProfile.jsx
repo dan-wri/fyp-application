@@ -53,7 +53,30 @@ export function MyProfile() {
     };
 
     const handleSave = async () => {
+        const token = localStorage.getItem('token');
         
+        try {
+            const response = await fetch('http://localhost:8000/set-user-details', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Failed to update profile');
+            }
+
+            const updated = await response.json();
+            setUser(prev => ({ ...prev, ...updated }));
+            setIsEditing(false);
+        } catch (error) {
+            console.error(error);
+            setError(error.message);
+        }
     };
 
     useEffect(() => {
@@ -161,8 +184,8 @@ export function MyProfile() {
 
                 {isEditing ? (
                     <>
-                        <button onClick={handleSave} className='profile-edit-button'>Save</button>
-                        <button onClick={() => { setIsEditing(false); setFormData(user); }} className='profile-edit-button'>Cancel</button>
+                        <button onClick={handleSave} className='profile-edit-button' style={{marginRight: 10, backgroundColor: 'green'}}>Save</button>
+                        <button onClick={() => { setIsEditing(false); setFormData(user); }} className='profile-edit-button' style={{backgroundColor: 'grey'}}>Cancel</button>
                     </>
                 ) : (
                     <button onClick={() => setIsEditing(true)} className='profile-edit-button'>Edit Profile</button>
