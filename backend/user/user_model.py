@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from database import Base
-from database import engine
+from core.database import Base
 
 
 class User(Base):
@@ -22,6 +21,3 @@ class User(Base):
     role = Column(String, default="user")
     xp = Column(Integer, default=0)
     level = Column(Integer, default=1)
-
-
-User.metadata.create_all(bind=engine)

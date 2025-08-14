@@ -32,7 +32,7 @@ export function SignUp() {
     setLoading(true)
 
     try {
-        const registerResponse = await fetch('http://localhost:8000/register', {
+        const registerResponse = await fetch('http://localhost:8000/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export function SignUp() {
             formDetails.append('username', email)
             formDetails.append('password', password)
 
-        const loginResponse = await fetch('http://localhost:8000/token', {
+        const loginResponse = await fetch('http://localhost:8000/auth/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

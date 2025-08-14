@@ -17,7 +17,7 @@ export function MyProfile() {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8000/get-user-details', {
+                const response = await fetch('http://localhost:8000/user/get-user-details', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -56,7 +56,7 @@ export function MyProfile() {
         const token = localStorage.getItem('token');
         
         try {
-            const response = await fetch('http://localhost:8000/set-user-details', {
+            const response = await fetch('http://localhost:8000/user/set-user-details', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

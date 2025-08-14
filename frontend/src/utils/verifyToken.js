@@ -4,7 +4,7 @@ export async function verifyToken() {
     if (!token) return false
 
     try {
-        const response = await fetch(`http://localhost:8000/verify-token/${token}`)
+        const response = await fetch(`http://localhost:8000/auth/verify-token/${token}`)
         return response.ok
     } catch (error) {
         console.error("Token verification failed:", error)
