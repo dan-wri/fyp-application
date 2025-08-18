@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export function MyProfile() {
@@ -11,6 +11,8 @@ export function MyProfile() {
     const [usernameWidth, setUsernameWidth] = useState(0);
     const measureRef = useRef();
     const bioRef = useRef(null);
+    const [usernameError, setUsernameError] = useState('');
+    const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -52,9 +54,46 @@ export function MyProfile() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const checkUsername = useCallback(async () => {
+        if (!isEditing) return;
+        if (formData.username === user.username) {
+            setIsUsernameAvailable(true);
+            setUsernameError('');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/user/check-username?username=${encodeURIComponent(formData.username)}`);
+            const data = await response.json();
+
+            if (!data.available) {
+                setIsUsernameAvailable(false);
+                setUsernameError('This username is already taken.');
+            } else {
+                setIsUsernameAvailable(true);
+                setUsernameError('');
+            }
+        } catch {
+            setIsUsernameAvailable(false);
+            setUsernameError('Could not verify username availability. Please try again.');
+        }
+    }, [formData.username, isEditing, user?.username]);
+
+    useEffect(() => {
+        if (!user || !formData.username) return;
+
+        const debounce = setTimeout(checkUsername, 500);
+        return () => clearTimeout(debounce);
+    }, [checkUsername, formData.username, user]);
+
     const handleSave = async () => {
+        await checkUsername();
+        if (!isUsernameAvailable) {
+            setError('Username Unavaliable. Please choose another username.');
+            return;
+        }
+
         const token = localStorage.getItem('token');
-        
         try {
             const response = await fetch('http://localhost:8000/user/set-user-details', {
                 method: 'POST',
@@ -146,6 +185,11 @@ export function MyProfile() {
                     )}
                     <span className="username-normal">{"'s profile"}</span>
                 </h1>
+
+                {isEditing && usernameError && (
+                    <div style={{ color: 'red', fontSize: '0.9em' }}>{usernameError}</div>
+                )}
+
                 <p className="email">{user.email}</p>
 
                 <div>
@@ -184,7 +228,7 @@ export function MyProfile() {
 
                 {isEditing ? (
                     <>
-                        <button onClick={handleSave} className='profile-edit-button' style={{marginRight: 10, backgroundColor: 'green'}}>Save</button>
+                        <button onClick={handleSave} className='profile-edit-button' style={{marginRight: 10, backgroundColor: isUsernameAvailable ? 'green' : 'grey'}} disabled={!isUsernameAvailable}>Save</button>
                         <button onClick={() => { setIsEditing(false); setFormData(user); }} className='profile-edit-button' style={{backgroundColor: 'grey'}}>Cancel</button>
                     </>
                 ) : (

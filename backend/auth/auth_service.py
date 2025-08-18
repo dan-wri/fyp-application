@@ -1,18 +1,42 @@
+import random
 from datetime import timedelta
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from user.user_service import get_user_by_email, get_user_by_username
 from .auth_schemas import UserCreate
 from user.user_model import User
 from core.security import hash_password, verify_password, create_access_token
 from core.config import ACCESS_TOKEN_EXPIRE_MINUTES
-from user.user_service import get_user_by_email
+
+
+ADJECTIVES = [
+    "Swift", "Mighty", "Clever", "Brave", "Lucky", "Silly", "Wise", "Fierce", "Happy", "Sneaky"
+]
+
+NOUNS = [
+    "Tiger", "Eagle", "Shark", "Panda", "Wolf", "Falcon", "Bear", "Dragon", "Fox", "Lion"
+]
+
+
+def generate_unique_username(db: Session) -> str:
+    while True:
+        adjective = random.choice(ADJECTIVES)
+        noun = random.choice(NOUNS)
+        number = random.randint(100, 999)
+        username = f"{adjective}{noun}{number}"
+        if not get_user_by_username(db, username):
+            return username
 
 
 def register_user(db: Session, user: UserCreate):
     if get_user_by_email(db, user.email):
         raise HTTPException(status_code=400, detail="Email already registered")
+
     hashed_pw = hash_password(user.password)
-    db_user = User(email=user.email, hashed_password=hashed_pw, role="user")
+    username = generate_unique_username(db)
+
+    db_user = User(email=user.email, hashed_password=hashed_pw,
+                   role="user", username=username)
     db.add(db_user)
     db.commit()
     return {"message": "User created successfully"}
