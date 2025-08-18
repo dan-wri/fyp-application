@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from core.database import Base, engine
 from auth import auth_router as auth
 from user import user_router as user
@@ -9,6 +10,8 @@ app = FastAPI()
 
 app.include_router(user.router, prefix="/user", tags=["user"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 
 origins = [
     "http://localhost:5173"

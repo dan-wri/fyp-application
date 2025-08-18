@@ -20,9 +20,10 @@ def gain_xp(db: Session, user: User, amount: int):
     return {"xp": user.xp, "level": user.level}
 
 
-def update_user_details(db: Session, user: User, updates: UserUpdate):
-    for field, value in updates.dict(exclude_unset=True).items():
-        setattr(user, field, value)
+def update_user_details(db: Session, user: User, updates: dict):
+    for field, value in updates.items():
+        if value is not None:
+            setattr(user, field, value)
     db.commit()
     db.refresh(user)
     return user

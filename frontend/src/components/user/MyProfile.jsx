@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import defaultUser from "../../assets/default_user.jpg"
+import cameraIcon from "../../assets/camera_icon.png"
 
 export function MyProfile() {
     const [user, setUser] = useState(null);
@@ -89,19 +91,31 @@ export function MyProfile() {
     const handleSave = async () => {
         await checkUsername();
         if (!isUsernameAvailable) {
-            setError('Username Unavaliable. Please choose another username.');
+            setError('Username unavailable. Please choose another username.');
             return;
         }
 
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch('http://localhost:8000/user/set-user-details', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+            const data = new FormData();
+            data.append("user_data", JSON.stringify({
+                username: formData.username,
+                full_name: formData.full_name,
+                age: formData.age,
+                pronouns: formData.pronouns,
+                gender: formData.gender,
+                bio: formData.bio,
+                address: formData.address
+            }));
+
+            if (formData.profileFile) {
+                data.append("profile_picture", formData.profileFile);
+            }
+
+            const response = await fetch("http://localhost:8000/user/set-user-details", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+                body: data
             });
 
             if (!response.ok) {
@@ -111,6 +125,7 @@ export function MyProfile() {
 
             const updated = await response.json();
             setUser(prev => ({ ...prev, ...updated }));
+            setFormData(updated);
             setIsEditing(false);
         } catch (error) {
             console.error(error);
@@ -137,11 +152,42 @@ export function MyProfile() {
     return (
         <div className='profile-container'>
             <div className="profile-left">
-                <img
-                    className="profile-picture"
-                    src={user.profile_picture || 'https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg'}
-                    alt="User Profile"
-                />
+                <div className="profile-picture-container">
+                    <img
+                        className="profile-picture"
+                        src={formData.profileFile ? formData.profile_picture : user.profile_picture ? `http://localhost:8000${user.profile_picture}` : defaultUser}
+                        alt="User Profile"
+                    />
+                    {isEditing && (
+                        <div
+                            className="profile-picture-overlay"
+                            onClick={() => document.getElementById('profileImageInput').click()}
+                        >
+                            <img
+                                src={cameraIcon}
+                                alt="Upload Icon"
+                                className="camera-icon"
+                            />
+                        </div>
+                    )}
+                    <input
+                        type="file"
+                        id="profileImageInput"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                                const file = e.target.files[0];
+                                const previewUrl = URL.createObjectURL(file);
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    profileFile: file,
+                                    profile_picture: previewUrl,
+                                }));
+                            }
+                        }}
+                    />
+                </div>
                 <ul className="profile-info">
                     {['full_name', 'age', 'pronouns', 'gender', 'address'].map((field) => (
                         <li key={field}>
