@@ -155,7 +155,13 @@ export function MyProfile() {
                 <div className="profile-picture-container">
                     <img
                         className="profile-picture"
-                        src={formData.profileFile ? formData.profile_picture : user.profile_picture ? `http://localhost:8000${user.profile_picture}` : defaultUser}
+                        src={
+                            formData.profileFile
+                                ? URL.createObjectURL(formData.profileFile) // always generate preview here
+                                : user.profile_picture
+                                ? `http://localhost:8000${user.profile_picture}?t=${Date.now()}`
+                                : defaultUser
+                        }
                         alt="User Profile"
                     />
                     {isEditing && (
@@ -178,11 +184,9 @@ export function MyProfile() {
                         onChange={(e) => {
                             if (e.target.files && e.target.files[0]) {
                                 const file = e.target.files[0];
-                                const previewUrl = URL.createObjectURL(file);
                                 setFormData((prev) => ({
                                     ...prev,
                                     profileFile: file,
-                                    profile_picture: previewUrl,
                                 }));
                             }
                         }}
