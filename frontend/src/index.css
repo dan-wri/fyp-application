@@ -29,12 +29,33 @@ body {
   width: 100%;
 }
 
+/* .app-layout.sidebar-open .app-main,
+.app-layout.sidebar-open .header-content {
+  transform: translateX(-300px);
+  margin-right: 0px;
+}
+
+.app-main,
+.header-content {
+  transition: transform 0.3s ease;
+} */
+
+.shift-container {
+  transition: transform 0.3s ease, margin-right 0.3s ease;
+}
+
+.app-layout.sidebar-open .shift-container {
+  transform: translateX(-300px);
+  margin-right: -300px;
+}
+
 .app-header {
   background-color: white;
   padding: 1.5rem;
   border-bottom: 1px solid var(--border-color);
   width: 100%;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.055);
+  height: 75px;
 }
 
 .header-content {
@@ -73,6 +94,87 @@ body {
 .header-user {
   padding: 0 1rem;
   margin-left: 1rem;
+}
+
+.sidebar-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #ddd;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  z-index: 250;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  right: -300px;
+  height: 100%;
+  width: 300px;
+  background-color: white;
+  border-left: 1px solid #ddd;
+  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-container.open {
+  right: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.sidebar-header p {
+  padding: 0 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.sidebar-header::before {
+  content: "";
+  position: absolute;
+  height: 50%;
+  width: 1px;
+  background-color: #d1d5db;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sidebar-header .left,
+.sidebar-header .right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.sidebar-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .app-main {

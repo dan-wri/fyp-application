@@ -3,7 +3,7 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import Login from './components/Login'
 import ProtectedPage from './components/Protected'
 import SignUp from './components/SignUp'
-import Layout from './components/Layout'
+import Layout from './components/structure/Layout'
 import MyProfile from './components/user/MyProfile'
 
 
