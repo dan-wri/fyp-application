@@ -23,17 +23,17 @@ const AddFriends = () => {
                 ? `http://localhost:8000/user/search-users?query=${encodeURIComponent(query)}`
                 : "http://localhost:8000/user/random-users";
             
-            const res = await fetch(url, {
+            const response = await fetch(url, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             });
-            
-            const data = await res.json();
+
+            const data = await response.json();
             setUsers(data);
-        } catch (err) {
-            console.error("Failed to fetch users:", err);
+        } catch (error) {
+            console.error("Failed to fetch users:", error);
         }
     };
 

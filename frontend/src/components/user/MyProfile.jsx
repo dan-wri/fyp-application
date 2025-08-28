@@ -27,19 +27,10 @@ export function MyProfile() {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data);
-                    setFormData(data);
-                } else if (response.status === 403 || response.status === 401) {
-                    setError('Unauthorized. Please log in again.');
-                    localStorage.removeItem('token');
-                    navigate('/');
-                } else {
-                    const errorData = await response.json();
-                    setError(errorData.detail || 'Failed to fetch user details.');
-                }
+                
+                const data = await response.json();
+                setUser(data);
+                setFormData(data);
             } catch (error) {
                 setError('Server error. Please try again later.');
                 console.error(error);
@@ -118,11 +109,6 @@ export function MyProfile() {
                 body: data
             });
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.detail || 'Failed to update profile');
-            }
-
             const updated = await response.json();
             setUser(prev => ({ ...prev, ...updated }));
             setFormData(updated);
@@ -157,7 +143,7 @@ export function MyProfile() {
                         className="profile-picture"
                         src={
                             formData.profileFile
-                                ? URL.createObjectURL(formData.profileFile) // always generate preview here
+                                ? URL.createObjectURL(formData.profileFile)
                                 : user.profile_picture
                                 ? `http://localhost:8000${user.profile_picture}?t=${Date.now()}`
                                 : defaultUser
