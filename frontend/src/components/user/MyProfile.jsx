@@ -28,12 +28,17 @@ export function MyProfile() {
                     },
                 });
                 
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                }
+
                 const data = await response.json();
                 setUser(data);
                 setFormData(data);
             } catch (error) {
-                setError('Server error. Please try again later.');
                 console.error(error);
+                setError(`Failed to fetch user details: ${error.message}`);
             } finally {
                 setLoading(false);
             }
@@ -57,6 +62,9 @@ export function MyProfile() {
 
         try {
             const response = await fetch(`http://localhost:8000/user/check-username?username=${encodeURIComponent(formData.username)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
             const data = await response.json();
 
             if (!data.available) {
@@ -66,9 +74,9 @@ export function MyProfile() {
                 setIsUsernameAvailable(true);
                 setUsernameError('');
             }
-        } catch {
+        } catch (error) {
             setIsUsernameAvailable(false);
-            setUsernameError('Could not verify username availability. Please try again.');
+            setUsernameError(`Could not verify username availability: ${error.message}`);
         }
     }, [formData.username, isEditing, user?.username]);
 
@@ -109,13 +117,18 @@ export function MyProfile() {
                 body: data
             });
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}`);
+            }
+
             const updated = await response.json();
             setUser(prev => ({ ...prev, ...updated }));
             setFormData(updated);
             setIsEditing(false);
         } catch (error) {
             console.error(error);
-            setError(error.message);
+            setError(`Failed to set new user data: ${error.message}`);
         }
     };
 

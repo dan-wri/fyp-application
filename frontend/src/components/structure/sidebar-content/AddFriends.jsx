@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 const AddFriends = () => {
     const [search, setSearch] = useState("");
     const [users, setUsers] = useState([]);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         fetchUsers();
@@ -30,10 +31,17 @@ const AddFriends = () => {
                 },
             });
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP ${response.status}`);
+            }
+
             const data = await response.json();
             setUsers(data);
+            setError("");
         } catch (error) {
             console.error("Failed to fetch users:", error);
+            setError(`Failed to fetch users: ${error.message}`);
         }
     };
 
@@ -46,6 +54,9 @@ const AddFriends = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 className="search-input"
             />
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
             <div className="user-list">
                 {users.length > 0 ? (
                     users.map((user) => (
@@ -54,7 +65,7 @@ const AddFriends = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No users found</p>
+                    !error && <p>No users found</p>
                 )}
             </div>
         </div>
