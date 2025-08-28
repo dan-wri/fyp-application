@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from .user_model import User
 from .user_schemas import UserUpdate
+import random
 
 
 def get_user_by_email(db: Session, email: str):
@@ -27,3 +28,14 @@ def update_user_details(db: Session, user: User, updates: dict):
     db.commit()
     db.refresh(user)
     return user
+
+
+def get_random_users(db: Session):
+    users = db.query(User).all()
+    if not users:
+        return []
+    return random.sample(users, min(len(users), 7))
+
+
+def search_users_by_username(db: Session, query: str):
+    return db.query(User).filter(User.username.ilike(f"%{query}%")).all()

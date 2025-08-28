@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, UploadFile, File, Form, Query
 from sqlalchemy.orm import Session
 from core.dependencies import get_db, get_current_user
 from PIL import Image
-from .user_service import gain_xp, update_user_details, get_user_by_username
+from .user_service import gain_xp, update_user_details, get_user_by_username, get_random_users, search_users_by_username
 from .user_schemas import UserUpdate
 from .user_model import User
 import shutil
@@ -46,3 +46,13 @@ async def set_user_details(user_data: str = Form(...), profile_picture: UploadFi
 def check_username(username: str, db: Session = Depends(get_db)):
     existing_user = get_user_by_username(db, username)
     return {"available": existing_user is None}
+
+
+@router.get("/random-users")
+def random_users(db: Session = Depends(get_db), _current_user: User = Depends(get_current_user)):
+    return get_random_users(db)
+
+
+@router.get("/search-users")
+def search_users(query: str = Query(...), db: Session = Depends(get_db), _current_user: User = Depends(get_current_user)):
+    return search_users_by_username(db, query)
