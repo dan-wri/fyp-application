@@ -4,12 +4,14 @@ from fastapi.staticfiles import StaticFiles
 from core.database import Base, engine
 from auth import auth_router as auth
 from user import user_router as user
+from ai import llm_router as llm
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 app.include_router(user.router, prefix="/user", tags=["user"])
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(llm.router, prefix="/ai", tags=["ai"])
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 

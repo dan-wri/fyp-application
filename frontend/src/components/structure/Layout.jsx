@@ -28,7 +28,7 @@ export function Layout() {
                     <div className="header-content">
                         <h1>FutureSpace AI</h1>
                         <nav>
-                            <Link to="/write">Pro Writer</Link>
+                            <Link to="/prowriter">Pro Writer</Link>
                             <Link to="/protected">Generate Challenge</Link>
                             <div 
                                 className="nav-dropdown"
