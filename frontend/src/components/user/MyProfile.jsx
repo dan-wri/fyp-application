@@ -241,8 +241,21 @@ export function MyProfile() {
 
                 <p className="email">{user.email}</p>
 
+                <div className="xp-section">
+                    <div className="level-text">Level {user.level || 1}</div>
+                    <div className="xp-bar-container">
+                        <div
+                            className="xp-bar-fill"
+                            style={{
+                                width: `${(user.xp % 5000) / 5000 * 100}%`
+                            }}
+                        ></div>
+                    </div>
+                    <div className="xp-text">{user.xp % 5000} / 5000 XP</div>
+                </div>
+
                 <div>
-                    <div className='info-label'>About Me:</div>
+                    <div className='bio-header'>About Me:</div>
                     {isEditing ? (
                         <textarea
                         name="bio"
@@ -259,20 +272,6 @@ export function MyProfile() {
                         ))}
                         </div>
                     )}
-                </div>
-
-
-                <div className="xp-section">
-                    <div className="level-text">Level {user.level || 1}</div>
-                    <div className="xp-bar-container">
-                        <div
-                            className="xp-bar-fill"
-                            style={{
-                                width: `${(user.xp % 5000) / 5000 * 100}%`
-                            }}
-                        ></div>
-                    </div>
-                    <div className="xp-text">{user.xp % 5000} / 5000 XP</div>
                 </div>
 
                 {isEditing ? (

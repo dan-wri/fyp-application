@@ -714,7 +714,7 @@ body {
   margin: 0 auto;
   border-radius: 0.5rem;
   padding: 2rem 1.5rem;
-  background: #fff;
+  background: rgb(255, 255, 255, 0.5);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   gap: 2rem;
 }
@@ -819,7 +819,6 @@ body {
 
 .email {
   color: gray;
-  margin-bottom: 1rem;
   font-size: 1rem;
 }
 
@@ -831,7 +830,6 @@ body {
 
 .bio {
   font-style: italic;
-  margin-bottom: 1rem;
   font-size: 0.9rem;
   line-height: 1.5;
   max-height: 200px;
@@ -841,6 +839,14 @@ body {
   border: 1px solid #ccc;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
+}
+
+.bio-header {
+  font-weight: 600;
+  color: #000000;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+  margin-top: 1rem;
 }
 
 .bio:hover {
@@ -861,13 +867,25 @@ body {
 }
 
 .xp-section {
-  margin-top: 1.5rem;
-  width: 100%;
+  margin-top: 1rem;
+  width: 50%;
+  background-color: rgb(240, 246, 253);
+  color: white;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  color: rgb(0, 0, 0);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.xp-section:hover {
+  background-color: rgb(240, 246, 253);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.15);
 }
 
 .level-text {
-  font-weight: bold;
   font-size: 1rem;
+  font-weight: 200;
   margin-bottom: 0.3rem;
 }
 
@@ -887,8 +905,9 @@ body {
 
 .xp-text {
   margin-top: 0.3rem;
-  font-size: 0.9rem;
-  color: #333;
+  font-size: 1rem;
+  font-weight: 200;
+  font-style: italic;
 }
 
 .profile-edit-button {
