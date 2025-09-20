@@ -48,6 +48,8 @@ export function ProWriter() {
         <div className="text-rephraser-container">
             <h2>Rewrite Your Text</h2>
 
+            <p className="desc">This tool utilises AI to improve the clairty, tone and flow of your emails or text inputs. Select below the preffered text format output and generate a response. </p>
+
             <div className="dropdown-wrapper">
                 <Dropdown
                     options={["Email", "Text Rewriter"]}

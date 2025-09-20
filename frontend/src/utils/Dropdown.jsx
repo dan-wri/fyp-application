@@ -28,7 +28,7 @@ export function Dropdown({ options, selected, onSelect }) {
     }, []);
 
     return (
-        <div className="dropdown" ref={dropdownRef}>
+        <div className={`dropdown ${isOpen ? "dropdown-open" : ""}`} ref={dropdownRef}>
             <div
                 className={`dropdown-select ${isOpen ? "dropdown-select-clicked" : ""}`}
                 onClick={(e) => {
